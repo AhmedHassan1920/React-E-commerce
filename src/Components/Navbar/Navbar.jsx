@@ -1,13 +1,42 @@
-import React , { useContext } from 'react';
+import React , { useContext, useEffect, useState } from 'react';
 import styles from './Navbar.module.css';
 import { Link } from 'react-router-dom';
 import { Navigate } from 'react-router-dom'
 import logo from '../../Assets/images/freshcart-logo.svg'
 import { UserContext } from '../../Context/UserContext';
+import { CartContext } from '../../Context/CartContext';
+import { useQuery } from 'react-query';
+import { WishListContext } from '../../Context/WishListContext';
+
+
 
 export default function Navbar() {
+
+const [cart, setCart] = useState(null);
+const [wishList, setWishList] = useState(null);
+const {userToken , setUserToken} = useContext(UserContext)
+
+let { getCartItems } = useContext(CartContext)
+let { getWishListItems  } = useContext(WishListContext)
   
-  let {userToken , setUserToken} = useContext(UserContext)
+async function getItemsofCart() {
+  let {data} = await getCartItems()
+  setCart(data.numOfCartItems)
+}
+  
+let { } = useQuery('getCartItems' , getItemsofCart , {
+  refetchInterval : 500
+} )
+
+async function getItemsofWishList() {
+  let {data} = await getWishListItems()
+  setWishList(data.count)
+}
+  
+let { } = useQuery('getWishListItems' , getItemsofWishList ,{
+  refetchInterval : 500
+})
+
 
   function logOut(){
     localStorage.removeItem('userToken');
@@ -25,20 +54,24 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul className="navbar-nav mx-auto fw-bold  mb-2 mb-lg-0">
             {userToken != null ? <>
-              <li className="nav-item">
+            
+            <li className="nav-item">
               <Link className="nav-link" to="/">Home</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/products">Products</Link>
             </li>
+            
             <li className="nav-item">
               <Link className="nav-link" to="/categories">Categories</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/brands">Brands</Link>
             </li>
+            
+            
             </> : '' }
 
           </ul>
@@ -52,9 +85,25 @@ export default function Navbar() {
             </li>
             
             {userToken != null ? <>
+
+              <li className="nav-item">
+                <Link className="nav-link position-relative " to="/cart">
+                  <i class="fa-solid fa-cart-shopping fs-4 text-main"></i>
+                  <span><p className='cart-num'>{cart}</p></span>
+                </Link>
+              </li>
+              
+              <li className="nav-item me-3 ">
+                <Link className="nav-link position-relative" to="/wishlist">
+                  <i class="fa-regular fs-4 mx-2  text-main fa-heart"></i>
+                  <span><p className='cart-num'>{wishList}</p></span>
+                  </Link>
+              </li>
+              
               <li className="nav-item">
                 <Link onClick={logOut} className="nav-link bg-main text-light rounded-2 " >Logout</Link>
               </li>
+
             </> : <>
               <li className="nav-item">
                 <Link className="nav-link" to="/login">Login</Link>

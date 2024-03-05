@@ -12,6 +12,13 @@ import { useContext, useEffect } from 'react';
 import { UserContext } from './Context/UserContext';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
 import ProductDetails from './Components/ProductDetails/ProductDetails';
+import { Toaster } from 'react-hot-toast';
+import WishList from './Components/WishList/WishList';
+import NotFound from './Components/NotFound/NotFound';
+import ShippingAddress from './Components/ShippingAddress/ShippingAddress';
+
+
+
 
 
 export default function App() {
@@ -24,8 +31,11 @@ export default function App() {
       {path:'Cart' , element:<ProtectedRoute> <Cart/> </ProtectedRoute>},
       {path:'Categories' , element:<ProtectedRoute> <Categories/> </ProtectedRoute>},
       {path:'Brands' , element:<ProtectedRoute> <Brands/> </ProtectedRoute>},
+      {path:'WishList' , element:<ProtectedRoute> <WishList/> </ProtectedRoute>},
+      {path:'shippingAddress/:id' , element:<ProtectedRoute> <ShippingAddress/> </ProtectedRoute>},
       {path:'Login' , element:<Login/>},
       {path:'Register' , element:<Register/>},
+      {path:'*' , element:<NotFound/>},
     ] }
   ])
 
@@ -39,5 +49,6 @@ export default function App() {
 
   return <> 
   <RouterProvider router={routes}></RouterProvider>;
+  <Toaster/>
   </>
 }
